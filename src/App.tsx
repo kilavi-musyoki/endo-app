@@ -65,6 +65,7 @@ export const AppContent: React.FC = () => {
               refreshData();
               setCurrentTab('timeline');
             }}
+            onNavigateToCare={() => setCurrentTab('education')}
           />
         )}
 

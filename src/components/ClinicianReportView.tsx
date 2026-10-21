@@ -12,6 +12,7 @@ import {
 import { useI18n } from '../locales/i18nContext';
 import { StorageService } from '../services/storageService';
 import { LogEntry, PainDetail, PainLocation } from '../types';
+import { dateToLocalIso } from '../utils/dates';
 
 interface ClinicianReportProps {
   entries: LogEntry[];
@@ -24,13 +25,6 @@ const impactStyles: Record<LogEntry['dailyImpact'], string> = {
   mild_interference: 'bg-amber-50 text-amber-900',
   missed_school_work: 'bg-rose-50 text-rose-900',
   bed_rest: 'bg-rose-50 text-rose-900',
-};
-
-const dateToLocalIso = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
 };
 
 export const ClinicianReportView: React.FC<ClinicianReportProps> = ({ entries }) => {

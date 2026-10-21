@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useI18n } from '../locales/i18nContext';
 import { StorageService } from '../services/storageService';
 import { LogEntry } from '../types';
+import { dateToLocalIso } from '../utils/dates';
 import { 
   Trash2, 
   Droplet, 
@@ -103,7 +104,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
   const calendarDays = Array.from({ length: 30 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (29 - i));
-    const dateStr = d.toISOString().split('T')[0];
+    const dateStr = dateToLocalIso(d);
     const entry = entries.find(e => e.date === dateStr) || null;
     return { dateStr, entry };
   });
@@ -395,6 +396,12 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
                   </div>
 
                   <div className="flex items-center space-x-2">
+                    {entry.painScore >= 9 || entry.soakedWithinHour === true || (entry.symptoms && entry.symptoms.includes('possible_pregnancy')) ? (
+                      <span className="text-xs font-bold px-2 py-1 rounded-lg bg-rose-100 text-rose-900 border border-rose-300 flex items-center gap-1">
+                        <span>🚨</span>
+                        <span>{t.emergency.flaggedBadge}</span>
+                      </span>
+                    ) : null}
                     <span className={`text-xs font-semibold px-3 py-1.5 rounded-lg border ${painBadge.bg}`}>
                       {painBadge.label}
                     </span>
@@ -504,3 +511,4 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
       )}
     </div>
   );
+};

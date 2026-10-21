@@ -11,7 +11,8 @@ interface AccordionItemProps {
 
 const AccordionItem: React.FC<AccordionItemProps> = ({ title, icon, children, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
-  const id = `accordion-${title.replace(/\s+/g, '-').toLowerCase()}`;
+  // Use only alphanumeric chars + hyphens for a valid HTML id
+  const id = `accordion-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 
   return (
     <div className="rounded-2xl border border-stone-200 bg-white shadow-sm">

@@ -55,7 +55,25 @@ export type RelatedSymptom =
   | 'constipation_diarrhea'
   | 'leg_weakness'
   | 'lower_back_stiffness'
-  | 'brain_fog';
+  | 'brain_fog'
+  | 'fever'
+  | 'dizziness_fainting'
+  | 'unusual_discharge'
+  | 'possible_pregnancy';
+
+export type EmergencyAlertId = 
+  | 'severe_pain' 
+  | 'severe_bleeding' 
+  | 'pregnancy_complication' 
+  | 'pain_fever_discharge';
+
+export interface EmergencyAlert {
+  id: EmergencyAlertId;
+  severity: 'critical' | 'urgent_same_day';
+  titleKey: 'severePainTitle' | 'severeBleedingTitle' | 'pregnancyTitle' | 'feverDischargeTitle';
+  messageKey: 'severePainMessage' | 'severeBleedingMessage' | 'pregnancyMessage' | 'feverDischargeMessage';
+  details?: string;
+}
 
 export interface CustomSymptom {
   id: string;

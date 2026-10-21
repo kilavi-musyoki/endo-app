@@ -343,4 +343,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onClose, onDataUpdat
           </div>
         </div>
       </div>
-    <
+    </div>
+  );
+};

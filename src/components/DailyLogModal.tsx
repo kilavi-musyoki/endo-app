@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useI18n } from '../locales/i18nContext';
 import { StorageService } from '../services/storageService';
 import { PainLocationMap } from './PainLocationMap';
+import { EmergencyAlertModal } from './EmergencyAlertModal';
+import { evaluateEmergencyAlerts } from '../utils/emergencyAlerts';
 import { 
   LogEntry, 
   FlowLevel, 
@@ -13,6 +15,7 @@ import {
   SymptomCategory,
   CustomSymptom 
 } from '../types';
+import { localToday } from '../utils/dates';
 import { 
   CheckCircle2, 
   Droplets, 
@@ -27,11 +30,13 @@ import {
   Trash2,
   ChevronDown,
   X,
+  AlertOctagon,
 } from 'lucide-react';
 
 interface DailyLogProps {
   onSaved: () => void;
   entries: LogEntry[];
+  onNavigateToCare?: () => void;
 }
 
 const standardSymptomList: { key: RelatedSymptom; category: SymptomCategory }[] = [
@@ -39,6 +44,8 @@ const standardSymptomList: { key: RelatedSymptom; category: SymptomCategory }[] 
   { key: 'pain_with_intimacy', category: 'pelvic_cycle' },
   { key: 'heavy_clots', category: 'pelvic_cycle' },
   { key: 'ovulation_pain', category: 'pelvic_cycle' },
+  { key: 'unusual_discharge', category: 'pelvic_cycle' },
+  { key: 'possible_pregnancy', category: 'pelvic_cycle' },
   // Digestive
   { key: 'bloating_endo_belly', category: 'digestive' },
   { key: 'painful_bowel', category: 'digestive' },
@@ -51,13 +58,15 @@ const standardSymptomList: { key: RelatedSymptom; category: SymptomCategory }[] 
   { key: 'lower_back_stiffness', category: 'neuromuscular' },
   // Systemic / Mood
   { key: 'chronic_fatigue', category: 'systemic_mood' },
-  { key: 'brain_fog', category: 'systemic_mood' }
+  { key: 'brain_fog', category: 'systemic_mood' },
+  { key: 'fever', category: 'systemic_mood' },
+  { key: 'dizziness_fainting', category: 'systemic_mood' }
 ];
 
-export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries }) => {
+export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNavigateToCare }) => {
   const { t } = useI18n();
 
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState<string>(localToday());
   const [flow, setFlow] = useState<FlowLevel>('none');
   const [periodStart, setPeriodStart] = useState(false);
   const [periodEnd, setPeriodEnd] = useState(false);
@@ -91,6 +100,44 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries }) => 
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [saveError, setSaveError] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const userProfile = StorageService.getUserProfile();
+
+  // Emergency alerts evaluation based on Section 6
+  const activeAlerts = useMemo(() => {
+    return evaluateEmergencyAlerts({
+      painScore,
+      flow,
+      soakedWithinHour,
+      padsOrTamponsUsed: padsOrTamponsUsed === '' ? null : Number(padsOrTamponsUsed),
+      symptoms,
+      painLocations,
+      bleedingBetweenPeriods,
+      isTryingToConceive: userProfile.tryingToConceive,
+    });
+  }, [painScore, flow, soakedWithinHour, padsOrTamponsUsed, symptoms, painLocations, bleedingBetweenPeriods, userProfile.tryingToConceive]);
+
+  const [dismissedAlertsKey, setDismissedAlertsKey] = useState<string>('');
+  const [showEmergencyModal, setShowEmergencyModal] = useState<boolean>(false);
+
+  // Trigger immediate alert popup when a critical alert condition is activated
+  useEffect(() => {
+    if (activeAlerts.length > 0) {
+      const currentAlertsKey = activeAlerts.map(a => a.id).sort().join(',');
+      if (currentAlertsKey !== dismissedAlertsKey) {
+        setShowEmergencyModal(true);
+      }
+    } else {
+      setDismissedAlertsKey('');
+      setShowEmergencyModal(false);
+    }
+  }, [activeAlerts, dismissedAlertsKey]);
+
+  const handleDismissEmergency = () => {
+    const currentAlertsKey = activeAlerts.map(a => a.id).sort().join(',');
+    setDismissedAlertsKey(currentAlertsKey);
+    setShowEmergencyModal(false);
+  };
 
   // Load custom symptoms from storage
   useEffect(() => {
@@ -295,7 +342,11 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries }) => 
     leg_weakness: '🦵',
     lower_back_stiffness: '🦴',
     chronic_fatigue: '🔋',
-    brain_fog: '🌫️'
+    brain_fog: '🌫️',
+    fever: '🌡️',
+    dizziness_fainting: '💫',
+    unusual_discharge: '⚠️',
+    possible_pregnancy: '🤰',
   };
 
   const painTypeKeys: PainType[] = [
@@ -362,6 +413,45 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries }) => 
             />
           </div>
         </div>
+
+        {/* Section 6 Emergency Alert Screen (Modal) */}
+        <EmergencyAlertModal
+          alerts={activeAlerts}
+          isOpen={showEmergencyModal}
+          onDismiss={handleDismissEmergency}
+          onNavigateToCare={onNavigateToCare}
+        />
+
+        {/* Persistent In-Form Emergency Warning Banner */}
+        {activeAlerts.length > 0 && !showEmergencyModal && (
+          <div className="mb-4 rounded-2xl border-2 border-rose-500 bg-rose-50 p-4 text-rose-950 shadow-sm space-y-2.5 animate-fade-in">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2">
+                <AlertOctagon className="w-5 h-5 text-rose-700 shrink-0" />
+                <span className="text-xs font-black uppercase tracking-wider text-rose-800">
+                  {t.emergency.bannerBadge}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEmergencyModal(true)}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-700 text-white hover:bg-rose-800 transition"
+              >
+                {t.emergency.bannerAction}
+              </button>
+            </div>
+            <p className="text-sm font-semibold leading-snug">
+              {t.emergency.bannerTitle}
+            </p>
+            <ul className="text-xs space-y-1 text-rose-900 list-disc list-inside">
+              {activeAlerts.map(a => (
+                <li key={a.id}>
+                  <strong>{t.emergency[a.titleKey]}:</strong> {t.emergency[a.messageKey]}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {showSuccess ? (
           <div className="py-16 flex flex-col items-center justify-center text-center animate-scale-up">

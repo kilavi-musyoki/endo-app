@@ -48,6 +48,17 @@ export class StorageService {
   static deleteCareContact(id: string): void {
     localStorage.setItem(STORAGE_KEYS.CARE_CONTACTS, JSON.stringify(this.getCareContacts().filter(item => item.id !== id)));
   }
+
+  /** Updates an existing care contact in place, preserving its id and addedAt. */
+  static updateCareContact(id: string, updates: Omit<CareContact, 'id' | 'addedAt'>): CareContact | null {
+    const contacts = this.getCareContacts();
+    const index = contacts.findIndex(c => c.id === id);
+    if (index < 0) return null;
+    const updated: CareContact = { ...contacts[index], ...updates };
+    contacts[index] = updated;
+    localStorage.setItem(STORAGE_KEYS.CARE_CONTACTS, JSON.stringify(contacts));
+    return updated;
+  }
   /** Retrieves all symptom logs, ordered by date descending */
   static getEntries(): LogEntry[] {
     const raw = localStorage.getItem(STORAGE_KEYS.ENTRIES);
@@ -393,4 +404,10 @@ export class StorageService {
       painQualitySummary,
       painkillerResponse: {
         takenCount: pTaken.length,
-        ef
+        effectiveCount: pEffective,
+        partlyEffectiveCount: pPartlyEffective,
+        ineffectiveCount: pIneffective
+      },
+    };
+  }
+}

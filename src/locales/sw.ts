@@ -457,4 +457,10 @@ export const sw = {
     dismissContinue: "Nimeelewa — Endelea Kurekodi",
     boundaryNotice: "Tahadhari hii inatokana na viashiria vya dharura vya kitabibu kutoka mwongozo wa huduma. Haichukui nafasi ya huduma za dharura za matibabu. Ikiwa unajisikia vibaya au uko hatarini, wasiliana mara moja na huduma za dharura.",
   },
+  pagination: {
+    previous: "Iliyopita",
+    next: "Inayofuata",
+    showing: "Inaonyesha {start}–{end} kati ya rekodi {total}",
+    goToPage: "Nenda kwenye ukurasa wa {page}",
+  },
 };

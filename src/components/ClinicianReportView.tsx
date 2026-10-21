@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Activity,
   CalendarDays,
@@ -13,6 +13,7 @@ import { useI18n } from '../locales/i18nContext';
 import { StorageService } from '../services/storageService';
 import { LogEntry, PainDetail, PainLocation } from '../types';
 import { dateToLocalIso } from '../utils/dates';
+import { Pagination } from './Pagination';
 
 interface ClinicianReportProps {
   entries: LogEntry[];
@@ -30,6 +31,8 @@ const impactStyles: Record<LogEntry['dailyImpact'], string> = {
 export const ClinicianReportView: React.FC<ClinicianReportProps> = ({ entries }) => {
   const { t, language } = useI18n();
   const [preset, setPreset] = useState<RangePreset>('90');
+  const [currentDailyPage, setCurrentDailyPage] = useState<number>(1);
+  const DAILY_PAGE_SIZE = 6;
 
   const filteredEntries = useMemo(() => {
     if (preset === 'all') return entries;
@@ -50,6 +53,20 @@ export const ClinicianReportView: React.FC<ClinicianReportProps> = ({ entries })
     () => new Map(StorageService.getCustomSymptoms().map(symptom => [symptom.id, symptom.name])),
     [],
   );
+
+  // Reset daily details page when date preset or filtered entries change
+  useEffect(() => {
+    setCurrentDailyPage(1);
+  }, [preset, filteredEntries.length]);
+
+  const totalDailyPages = Math.max(1, Math.ceil(summary.dailyObservations.length / DAILY_PAGE_SIZE));
+  const safeDailyPage = Math.min(Math.max(1, currentDailyPage), totalDailyPages);
+  const pagedDailyObservations = useMemo(() => {
+    return summary.dailyObservations.slice(
+      (safeDailyPage - 1) * DAILY_PAGE_SIZE,
+      safeDailyPage * DAILY_PAGE_SIZE
+    );
+  }, [summary.dailyObservations, safeDailyPage]);
 
   const mostUsedMedicationTypes = useMemo(() => {
     const medicationCounts = new Map<string, { name: string; count: number }>();
@@ -331,9 +348,28 @@ export const ClinicianReportView: React.FC<ClinicianReportProps> = ({ entries })
             <section aria-labelledby="report-daily-heading" className="report-section">
               <SectionHeading id="report-daily-heading" icon={<ClipboardList className="h-4 w-4" aria-hidden="true" />} title={t.report.dailyPain} />
               <p className="mb-3 text-xs leading-relaxed text-slate-600">{t.report.dailyRecordsNote}</p>
-              <div className="space-y-3">
-                {summary.dailyObservations.map(entry => <DailyObservationCard key={entry.date} entry={entry} labels={t.log.locations} language={language} customSymptoms={customSymptomNames} />)}
+              
+              {/* Screen: Paginated (max 6 per page) */}
+              <div className="space-y-3 print:hidden">
+                {pagedDailyObservations.map(entry => (
+                  <DailyObservationCard key={entry.date} entry={entry} labels={t.log.locations} language={language} customSymptoms={customSymptomNames} />
+                ))}
               </div>
+
+              {/* Print / PDF view: Full list so all records appear in printed report */}
+              <div className="hidden space-y-3 print:block">
+                {summary.dailyObservations.map(entry => (
+                  <DailyObservationCard key={`print-${entry.date}`} entry={entry} labels={t.log.locations} language={language} customSymptoms={customSymptomNames} />
+                ))}
+              </div>
+
+              {/* Pagination Controls for screen view (max 6 per page) */}
+              <Pagination
+                currentPage={safeDailyPage}
+                totalItems={summary.dailyObservations.length}
+                pageSize={DAILY_PAGE_SIZE}
+                onPageChange={setCurrentDailyPage}
+              />
             </section>
           </>
         )}

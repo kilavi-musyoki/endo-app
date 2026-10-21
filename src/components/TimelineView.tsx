@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useI18n } from '../locales/i18nContext';
 import { StorageService } from '../services/storageService';
 import { LogEntry } from '../types';
 import { dateToLocalIso } from '../utils/dates';
+import { Pagination } from './Pagination';
 import { 
   Trash2, 
   Droplet, 
@@ -29,6 +30,8 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
   const { t, language } = useI18n();
   const [filter, setFilter] = useState<'all' | 'period' | 'high_pain'>('all');
   const [activeDate, setActiveDate] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const PAGE_SIZE = 11;
 
   // Filter entries
   const filteredEntries = entries.filter((e) => {
@@ -37,6 +40,15 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
     if (filter === 'high_pain') return e.painScore >= 7;
     return true;
   });
+
+  // Reset page to 1 when filter or active date changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, activeDate]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredEntries.length / PAGE_SIZE));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+  const pagedEntries = filteredEntries.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   const handleDelete = (id: string) => {
     if (confirm(t.timeline.deleteConfirm)) {
@@ -371,10 +383,11 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
           </> : <p className="text-sm text-slate-600 font-medium">{t.timeline.noMatchingLogs}</p>}
         </div>
       ) : (
-        <div className="space-y-2.5">
-          {filteredEntries.map((entry) => {
-            const isPeriod = entry.flow !== 'none';
-            const painBadge = getPainBadge(entry.painScore);
+        <div className="space-y-4">
+          <div className="space-y-2.5">
+            {pagedEntries.map((entry) => {
+              const isPeriod = entry.flow !== 'none';
+              const painBadge = getPainBadge(entry.painScore);
 
             return (
               <div
@@ -507,6 +520,15 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
               </div>
             );
           })}
+          </div>
+
+          {/* Pagination Controls (Max 11 entries per page) */}
+          <Pagination
+            currentPage={safePage}
+            totalItems={filteredEntries.length}
+            pageSize={PAGE_SIZE}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </div>

@@ -457,4 +457,10 @@ export const en = {
     dismissContinue: "I understand — Continue Logging",
     boundaryNotice: "This alert is based on emergency red flags from clinical care guidelines. It does not replace emergency medical triage. If you are in severe distress or acute danger, please contact local emergency medical services immediately.",
   },
+  pagination: {
+    previous: "Previous",
+    next: "Next",
+    showing: "Showing {start}–{end} of {total} records",
+    goToPage: "Go to page {page}",
+  },
 };

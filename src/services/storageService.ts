@@ -166,6 +166,19 @@ export class StorageService {
     this.clearActiveSyntheticProfile();
     const demo = getSyntheticDemoData();
     this.saveEntries(demo);
+    const language = this.getUserProfile().language;
+    this.saveUserProfile({
+      name: 'Zawadi M.',
+      age: 28,
+      ageAtFirstPeriod: 12,
+      pregnancies: 0,
+      tryingToConceive: true,
+      monthsTryingToConceive: 8,
+      familyHistoryEndometriosis: 'yes',
+      knownConditions: 'Severe dysmenorrhea, suspected adenomyosis',
+      language,
+      isDemoMode: true,
+    });
     localStorage.setItem(STORAGE_KEYS.DEMO_MODE, 'true');
     return demo;
   }
@@ -198,6 +211,8 @@ export class StorageService {
   /** Clears demo data to start a clean personal log */
   static clearToFreshDataset(): void {
     this.clearActiveSyntheticProfile();
+    const language = this.getUserProfile().language;
+    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify({ ...defaultProfile, language }));
     localStorage.removeItem(STORAGE_KEYS.ENTRIES);
     localStorage.setItem(STORAGE_KEYS.DEMO_MODE, 'false');
   }

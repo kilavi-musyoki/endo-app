@@ -20,6 +20,9 @@ The app supports personal symptom tracking and user-controlled preparation for a
 | P1 | Small controls, incomplete labels, and weak keyboard flows made touch and assistive use uncertain. | Increased many targets, added navigation names/current state, visible focus styling, dialog naming/focus handling, field labels, slider names/value descriptions, and reduced-motion styling. | Conduct keyboard-only and screen-reader audits; manually confirm target geometry, contrast, zoom, and focus return for every overlay. |
 | P2 | Thin text and closely packed content reduced legibility. | Raised selected tiny text styles, improved spacing and neutral contrast, used stronger borders and less saturated states. | Measure color contrast and test translated text expansion on supported devices. |
 | P2 | Kiswahili labels and report summaries were partly hard-coded in English. | Localized more navigation, settings, report-range, and metric labels. | Remaining source strings are not fully translated; arrange qualified language review before broad use. |
+| P1 | First-run welcome was only an acknowledgement and focusing its checkbox could move the page to the dialog's lower content. | Split onboarding into a prototype acknowledgement and optional display-name setup; mount it at the document level, begin its scroll position at the top, and prevent focus from scrolling the page. Added English and Kiswahili strings. | Check browser-specific focus, short viewport, keyboard, and translated text behavior. |
+
+The first-run visual polish uses a soft blush canvas and rose accents with plum controls and neutral reading surfaces. This is a prototype visual direction, not a finalized brand system.
 
 ## Implemented visual system
 

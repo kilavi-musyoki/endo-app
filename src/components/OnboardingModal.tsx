@@ -1,20 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useI18n } from '../locales/i18nContext';
-import { ShieldCheck, Clock, FileText, HeartPulse, Sparkles } from 'lucide-react';
+import { ShieldCheck, Clock, FileText, HeartPulse, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface OnboardingModalProps {
-  onDismiss: () => void;
+  onDismiss: (displayName: string) => void;
 }
 
 export const OnboardingModal: React.FC<OnboardingModalProps> = ({ onDismiss }) => {
   const { t } = useI18n();
+  const [step, setStep] = useState<1 | 2>(1);
   const [acknowledged, setAcknowledged] = useState(false);
+  const [displayName, setDisplayName] = useState('');
   const dialogRef = useRef<HTMLDivElement>(null);
-  const checkboxRef = useRef<HTMLInputElement>(null);
+  const firstStepRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    checkboxRef.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    dialogRef.current?.scrollTo({ top: 0 });
+    firstStepRef.current?.focus({ preventScroll: true });
+
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') event.preventDefault();
       if (event.key !== 'Tab') return;
       const items = dialogRef.current?.querySelectorAll<HTMLElement>('input:not([disabled]), button:not([disabled])');
       if (!items?.length) return;
@@ -24,83 +33,100 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ onDismiss }) =
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     };
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+    };
   }, []);
 
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-950/55 flex items-center justify-center p-4">
-      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="onboarding-title" aria-describedby="onboarding-disclaimer" className="bg-white rounded-2xl max-w-lg w-full max-h-[90dvh] overflow-y-auto p-6 shadow-2xl space-y-5 border border-stone-200">
-        {/* Header Icon & Title */}
-        <div className="text-center space-y-1.5">
-          <div className="w-14 h-14 rounded-3xl bg-gradient-to-tr from-brand-700 via-brand-600 to-rose-400 text-white flex items-center justify-center mx-auto mb-2 shadow-lg shadow-brand-600/30">
-            <HeartPulse className="w-7 h-7" />
+  useEffect(() => {
+    if (step === 2) {
+      dialogRef.current?.scrollTo({ top: 0 });
+      nameRef.current?.focus({ preventScroll: true });
+    }
+  }, [step]);
+
+  const content = (
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-slate-950/55 p-3 pt-[max(1rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-5" role="presentation">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="onboarding-title"
+        aria-describedby="onboarding-description"
+        className="my-auto w-full max-w-lg space-y-5 overflow-y-auto rounded-[1.75rem] border border-rose-100 bg-[#fffdfd] p-5 shadow-2xl shadow-slate-950/25 sm:p-7"
+        style={{ maxHeight: 'calc(100dvh - 2rem)' }}
+      >
+        <div className="text-center">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-rose-200 via-rose-300 to-brand-500 text-brand-900 shadow-lg shadow-rose-200/60">
+            <HeartPulse className="h-7 w-7" aria-hidden="true" />
           </div>
-          <div className="inline-block px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-800 text-[10px] font-black uppercase tracking-wider mb-1">
-            Kenya Women's Health Initiative
+          <div className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold tracking-wide text-brand-900">
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+            {t.onboarding.stepLabel.replace('{step}', String(step))}
           </div>
-          <h2 id="onboarding-title" className="text-xl font-bold text-slate-900 tracking-tight leading-tight">
-            {t.onboarding.welcome}
+          <h2 id="onboarding-title" className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+            {step === 1 ? t.onboarding.welcome : t.onboarding.profileTitle}
           </h2>
-          <p className="text-sm text-slate-700 leading-relaxed pt-1">
-            {t.onboarding.subtext}
+          <p id="onboarding-description" className="mx-auto max-w-md pt-2 text-sm leading-relaxed text-slate-700">
+            {step === 1 ? t.onboarding.subtext : t.onboarding.profileIntro}
           </p>
         </div>
 
-        {/* 3 Pillars */}
-          <div className="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-200 text-left">
-          <div className="flex items-start space-x-3">
-            <div className="w-7 h-7 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0 mt-0.5">
-              <Clock className="w-4 h-4" />
+        {step === 1 ? (
+          <>
+            <div className="space-y-3 rounded-2xl border border-rose-100 bg-rose-50/60 p-4 text-left">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700"><Clock className="h-4 w-4" /></div>
+                <div><h3 className="text-sm font-semibold text-slate-900">{t.onboarding.point1Title}</h3><p className="mt-0.5 text-sm leading-snug text-slate-600">{t.onboarding.point1Desc}</p></div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700"><FileText className="h-4 w-4" /></div>
+                <div><h3 className="text-sm font-semibold text-slate-900">{t.onboarding.point2Title}</h3><p className="mt-0.5 text-sm leading-snug text-slate-600">{t.onboarding.point2Desc}</p></div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700"><ShieldCheck className="h-4 w-4" /></div>
+                <div><h3 className="text-sm font-semibold text-slate-900">{t.onboarding.point3Title}</h3><p className="mt-0.5 text-sm leading-snug text-slate-600">{t.onboarding.point3Desc}</p></div>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-black text-slate-900">{t.onboarding.point1Title}</h4>
-              <p className="text-[11px] text-slate-500 leading-tight mt-0.5">{t.onboarding.point1Desc}</p>
-            </div>
-          </div>
 
-          <div className="flex items-start space-x-3">
-            <div className="w-7 h-7 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0 mt-0.5">
-              <FileText className="w-4 h-4" />
+            <div id="onboarding-disclaimer" className="rounded-2xl border border-rose-200 bg-white p-4 text-sm leading-relaxed text-slate-800">
+              <strong className="mb-1 block font-semibold text-brand-900">{t.onboarding.boundaryTitle}</strong>
+              {t.onboarding.disclaimer}
             </div>
-            <div>
-              <h4 className="text-xs font-black text-slate-900">{t.onboarding.point2Title}</h4>
-              <p className="text-[11px] text-slate-500 leading-tight mt-0.5">{t.onboarding.point2Desc}</p>
+
+            <label className="flex min-h-12 items-start gap-3 text-sm leading-relaxed text-slate-800">
+              <input ref={firstStepRef} type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-brand-800" />
+              <span>{t.onboarding.acknowledge}</span>
+            </label>
+            {!acknowledged && <p className="-mt-3 text-sm text-slate-600" aria-live="polite">{t.onboarding.acknowledgeRequired}</p>}
+            <button type="button" onClick={() => setStep(2)} disabled={!acknowledged} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand-800 px-4 font-semibold text-white transition-colors hover:bg-brand-900 disabled:cursor-not-allowed disabled:opacity-50">
+              {t.onboarding.continueProfile}<ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="space-y-4 rounded-2xl border border-rose-100 bg-rose-50/50 p-4 sm:p-5">
+              <label htmlFor="onboarding-display-name" className="block text-sm font-semibold text-slate-900">{t.onboarding.displayName}</label>
+              <input ref={nameRef} id="onboarding-display-name" type="text" autoComplete="nickname" maxLength={60} value={displayName} onChange={event => setDisplayName(event.target.value)} placeholder={t.onboarding.displayNamePlaceholder} className="ui-field min-h-12 border-rose-200 focus:border-brand-600" />
+              <p className="text-sm leading-relaxed text-slate-600">{t.onboarding.displayNameHelp}</p>
+              <div className="rounded-xl border border-rose-200 bg-white p-3 text-sm leading-relaxed text-slate-700">
+                <strong className="font-semibold text-brand-900">{t.onboarding.optionalDetailsTitle}</strong> {t.onboarding.optionalDetailsHelp}
+              </div>
             </div>
-          </div>
-
-          <div className="flex items-start space-x-3">
-            <div className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-              <ShieldCheck className="w-4 h-4" />
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+              <button type="button" onClick={() => setStep(1)} className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-stone-300 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-stone-50">
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />{t.onboarding.back}
+              </button>
+              <button type="button" onClick={() => onDismiss(displayName.trim())} className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-brand-800 px-4 font-semibold text-white transition-colors hover:bg-brand-900">
+                {t.onboarding.finish}<Sparkles className="h-4 w-4" aria-hidden="true" />
+              </button>
             </div>
-            <div>
-              <h4 className="text-xs font-black text-slate-900">{t.onboarding.point3Title}</h4>
-              <p className="text-[11px] text-slate-500 leading-tight mt-0.5">{t.onboarding.point3Desc}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Health Boundary Banner */}
-          <div id="onboarding-disclaimer" className="p-4 bg-brand-50 border border-brand-300 rounded-2xl text-sm text-brand-950 leading-relaxed">
-          <strong className="block font-black text-brand-900 mb-0.5">Strict Clinical Boundary:</strong>
-          {t.onboarding.disclaimer}
-        </div>
-
-        <label className="flex min-h-12 items-start gap-3 text-sm leading-relaxed text-slate-800">
-          <input ref={checkboxRef} type="checkbox" checked={acknowledged} onChange={e => setAcknowledged(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-brand-800" />
-          <span>{t.onboarding.acknowledge}</span>
-        </label>
-        {!acknowledged && <p className="text-sm text-slate-700" aria-live="polite">{t.onboarding.acknowledgeRequired}</p>}
-
-        {/* Action Button */}
-        <button
-          onClick={onDismiss}
-          disabled={!acknowledged}
-          className="min-h-14 w-full rounded-2xl bg-brand-800 hover:bg-brand-900 text-white font-semibold text-base transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <span>{t.onboarding.cta}</span>
-          <Sparkles className="w-4 h-4" />
-        </button>
+          </>
+        )}
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 };

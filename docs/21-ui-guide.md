@@ -38,11 +38,11 @@ Page content generally includes extra bottom padding so the fixed navigation doe
 
 ## 3. First-use and overlay states
 
-### Onboarding dialog
+### First-use welcome and profile setup
 
-On a browser without the onboarding marker, the app opens with a centered white dialog over a dark, blurred scrim. It contains the app/initiative label, welcome copy, three short feature points, a clinical-boundary banner, a checkbox acknowledging prototype-only use, and a primary start button. The start button remains disabled until the box is checked. Dismissing the dialog stores the acknowledgement in browser storage.
+On a browser without the onboarding marker, the app opens a two-step dialog mounted at the document level so its placement is anchored to the viewport. On short screens, the dialog scrolls internally from its top; opening it does not scroll the page to the focused control. Step 1 explains the app, its non-diagnostic purpose, and local-storage limitation, then asks the user to acknowledge prototype-only use. Step 2 asks for an optional display name or pseudonym for printed reports. The user can leave it blank. Other health-history details remain optional in Settings and are not required to start tracking. Finishing stores the display name, if supplied, and the onboarding acknowledgement in this browser.
 
-The acknowledgement says the user understands this is a prototype and will not enter real health information. It is not a formal consent or legal agreement.
+The acknowledgement says the user understands this is a prototype and will not enter real health information. It is not a formal consent or legal agreement. The display name is also stored in unencrypted browser storage and may appear on printed reports; the onboarding copy recommends fictional data only.
 
 ### Settings panel
 

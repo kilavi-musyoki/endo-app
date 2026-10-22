@@ -10,6 +10,7 @@ A mobile-first prototype for recording menstrual and related symptoms and prepar
 - Printable clinician summary, including user-entered history and daily observations.
 - A local list for contacts the user chooses to save. Listings are not verified by the app; location is entered manually and device location is not accessed.
 - English and Kiswahili interface strings, a convenience PIN screen, synthetic demo data, and local data deletion.
+- First-use onboarding explains prototype limits and offers an optional display name or pseudonym; sensitive health-history fields are not required to start.
 
 The app stores data in browser `localStorage`. The PIN does not encrypt it. This prototype is for review with synthetic demo data; **do not enter real health information**. Deleting data removes it from this browser storage, but does not secure exported reports or other copies.
 

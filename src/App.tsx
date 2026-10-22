@@ -31,13 +31,16 @@ export const AppContent: React.FC = () => {
     refreshData();
   }, []);
 
-  const handleDismissOnboarding = () => {
+  const handleDismissOnboarding = (displayName: string) => {
+    if (displayName) {
+      StorageService.saveUserProfile({ name: displayName });
+    }
     localStorage.setItem('endocare_onboarded', 'true');
     setShowOnboarding(false);
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col font-sans md:grid md:grid-cols-[15rem_minmax(0,1fr)] md:grid-rows-[auto_1fr]">
+    <div className="min-h-screen bg-rose-50/40 flex flex-col font-sans md:grid md:grid-cols-[15rem_minmax(0,1fr)] md:grid-rows-[auto_1fr]">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-4 focus:py-3 focus:text-brand-900 focus:shadow-lg">{t.app.skipToContent}</a>
       {/* Privacy Lock Screen */}
       {isLocked && <DiscreetLockModal onUnlock={() => setIsLocked(false)} />}

@@ -4,7 +4,7 @@
 
 | Requirement | Product requirement | Current implementation | Evidence / remaining review | Status |
 |---|---|---|---|---|
-| R-01 | FR-01 consent/account | Onboarding asks users to acknowledge prototype-only use; no account or legal consent flow. | Qualified privacy/legal review and consent design remain open. | In progress |
+| R-01 | FR-01 consent/account | First-run onboarding explains prototype limits, requests acknowledgement, and offers an optional display name/pseudonym; no account or legal consent flow. | Qualified privacy/legal review and consent design remain open. Display name is stored in unencrypted browser storage and can appear in reports. | In progress |
 | R-02 | FR-02 cycle records | Daily flow logs; explicit period-start/end markers; history edit/delete; descriptive cycle interval calculations. | Manual cycle-entry and missing-data review remains open. | In progress |
 | R-03 | FR-03 pain context | Daily pain, location, timing, context, and impact fields. | Manual form and report review remains open. | In progress |
 | R-04 | FR-04 related symptoms optional | Optional symptom, mood, bleeding, and free-text fields. | Sensitive-question and localization review remains open. | In progress |

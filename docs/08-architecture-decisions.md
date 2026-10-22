@@ -71,6 +71,14 @@
 - **Decision:** The timeline may plot user-entered daily pain scores over the most recent 30 days as dated points, with an equivalent data table. It does not connect points across missing dates, set urgency zones, generate a risk score, or recommend when to seek care. The UI states this limitation and invites users with concerns to discuss their records with a health professional.
 - **Consequences:** A clinically interpreted urgency feature remains deferred to ADR-006’s approval gate and the Phase 4 review process. The descriptive chart is not a substitute for medical advice or an urgent-care decision.
 
+## ADR-009: Use a minimal, optional first-run profile step
+
+- **Status:** Accepted (prototype behavior)
+- **Date:** 2026-10-22
+- **Context:** The first-run dialog previously asked only for acknowledgement and could cause the document to scroll while focusing its checkbox. The product asks for minimal collection, optional sensitive questions, and a clear local-storage warning.
+- **Decision:** Present a two-step first-run flow: prototype boundary and acknowledgement, then an optional display name or pseudonym. Do not require health-history details to enter the app. Keep other profile questions optional in Settings, preserve the prototype warning, and mount the dialog at the document level to keep it positioned relative to the viewport.
+- **Consequences:** A supplied display name is stored in this browser and may appear on reports; the first-run copy advises fictional data only. The flow is not formal consent or an account-creation process. Revisit the collected fields and copy after privacy review.
+
 ## Decision process
 
 Replace proposal status with accepted/rejected, owner, date, and review triggers when stakeholders decide. Add one ADR per consequential change.

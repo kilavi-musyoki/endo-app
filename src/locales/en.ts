@@ -419,6 +419,11 @@ export const en = {
     loadScenarioConfirm: "Load {name}? This replaces the current entries and profile details with fictional test data.",
     clearSyntheticScenarioButton: "Clear active test data",
     clearSyntheticScenarioConfirm: "Clear the active fictional profile and its entries? The app will return to an empty log.",
+    e2eeTitle: "Client-Side Field Encryption (E2EE)",
+    e2eeDesc: "Protects personal notes, body pain points, and intimate symptoms using AES-GCM 256-bit encryption before storage or sync. The encryption key is derived from your PIN/passphrase via PBKDF2.",
+    e2eeStatusActive: "AES-GCM Web Crypto Ready",
+    exportEncryptedBackup: "Export Encrypted Backup (.json)",
+    exportBackupSuccess: "Encrypted backup downloaded successfully.",
   },
   trackingBoundary: {
     title: "Your log is a record, not an assessment",

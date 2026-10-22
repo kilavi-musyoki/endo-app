@@ -419,6 +419,11 @@ export const sw = {
     loadScenarioConfirm: "Ungependa kupakia {name}? Hii itabadilisha rekodi na maelezo ya sasa ya wasifu kwa data ya majaribio ya kubuni.",
     clearSyntheticScenarioButton: "Futa data ya majaribio inayotumika",
     clearSyntheticScenarioConfirm: "Ufute wasifu wa kubuni unaotumika na rekodi zake? Programu itarudi kwenye rekodi tupu.",
+    e2eeTitle: "Usimbaji wa Nyanja Upande wa Mtumiaji (E2EE)",
+    e2eeDesc: "Hulinda maelezo binafsi, maeneo ya maumivu mwilini, na dalili nyeti kwa kutumia usimbaji wa AES-GCM biti-256 kabla ya kuhifadhi au kusawazisha. Ufunguo unatokana na PIN yako kupitia PBKDF2.",
+    e2eeStatusActive: "Web Crypto AES-GCM Iko Tayari",
+    exportEncryptedBackup: "Pakua Nakala Iliyosimbwa (.json)",
+    exportBackupSuccess: "Nakala iliyosimbwa imepakuliwa kikamilifu.",
   },
   trackingBoundary: {
     title: "Rekodi yako ni kumbukumbu, si tathmini",

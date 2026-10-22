@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../locales/i18nContext';
 import { StorageService } from '../services/storageService';
 import { UserProfile } from '../types';
-import { Settings, X, User, KeyRound, Globe, Trash2, Info } from 'lucide-react';
+import { Settings, X, User, KeyRound, Globe, Trash2, Info, ShieldCheck, Download, CheckCircle2 } from 'lucide-react';
 import { threeUserSyntheticFixtures } from '../data/threeUserSyntheticFixtures';
+import { encryptLogEntry } from '../utils/encryption';
 
 interface SettingsViewProps {
   onClose: () => void;
@@ -29,7 +30,36 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onClose, onDataUpdat
   const [pinMessage, setPinMessage] = useState<{ text: string; isError: boolean } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
   const [nameSaved, setNameSaved] = useState<boolean>(false);
+  const [e2eeStatus, setE2eeStatus] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleExportEncryptedBackup = async () => {
+    try {
+      const pin = profile.pin || '1234';
+      const entries = StorageService.getEntries();
+      const encryptedEntries = await Promise.all(
+        entries.map(e => encryptLogEntry(e, pin))
+      );
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        encryption: 'AES-GCM-256',
+        isEncrypted: true,
+        deviceSalt: localStorage.getItem('endocare_e2ee_salt') || '',
+        entries: encryptedEntries
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `endocare-encrypted-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setE2eeStatus(t.settings.exportBackupSuccess);
+      setTimeout(() => setE2eeStatus(null), 3000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -291,6 +321,36 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onClose, onDataUpdat
               ))}
             </div>
             {activeSyntheticScenario && <button type="button" onClick={handleClearSyntheticScenario} className="w-full rounded-xl border border-amber-300 bg-amber-50 px-3 py-2.5 text-xs font-bold text-amber-900 hover:bg-amber-100">{t.settings.clearSyntheticScenarioButton}</button>}
+          </section>
+
+          {/* Client-Side Field Encryption (E2EE) */}
+          <section className="border-t border-slate-100 pt-4 space-y-3" aria-labelledby="e2ee-title">
+            <div className="flex items-center justify-between">
+              <label id="e2ee-title" className="flex items-center space-x-1.5 text-xs font-bold text-slate-800">
+                <ShieldCheck className="w-4 h-4 text-emerald-700" />
+                <span>{t.settings.e2eeTitle}</span>
+              </label>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                {t.settings.e2eeStatusActive}
+              </span>
+            </div>
+            <p className="text-xs leading-relaxed text-slate-600">
+              {t.settings.e2eeDesc}
+            </p>
+            <button
+              type="button"
+              onClick={handleExportEncryptedBackup}
+              className="w-full flex items-center justify-center space-x-2 text-xs font-bold py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition active:scale-95 shadow-sm"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>{t.settings.exportEncryptedBackup}</span>
+            </button>
+            {e2eeStatus && (
+              <p className="flex items-center justify-center space-x-1 text-xs text-emerald-700 font-semibold mt-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{e2eeStatus}</span>
+              </p>
+            )}
           </section>
 
           {/* Delete All Data */}

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# Production build artifacts
+dist
+dist-ssr
+*.tsbuildinfo
+
+# Local env files (never commit real credentials)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel build output
+.vercel
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Temporary build directories
+.codex-pptx-build
+PowerPoint

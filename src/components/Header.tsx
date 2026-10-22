@@ -43,12 +43,15 @@ export const Header: React.FC<HeaderProps> = ({ onRefreshData, onLockApp, onOpen
             </div>
 
             <div>
-              <div className="flex items-center space-x-1.5">
+              <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
                 <h1 className="text-[15px] font-extrabold tracking-tight text-slate-900 leading-tight">
                   {t.app.title}
                 </h1>
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-stone-100 text-slate-700 border border-stone-200">
                   {t.app.prototypeLabel}
+                </span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
+                  {t.app.disclaimerBadge}
                 </span>
               </div>
               <p className="text-xs font-medium text-slate-600 leading-snug mt-0.5">

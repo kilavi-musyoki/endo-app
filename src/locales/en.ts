@@ -18,9 +18,13 @@ export const en = {
   },
   nav: {
     log: "Daily Log",
+    shortLog: "Daily Log",
     timeline: "Timeline & Trends",
+    shortTimeline: "Timeline",
     report: "Doctor Report",
+    shortReport: "Report",
     education: "Care & Education",
+    shortEducation: "Care & Info",
     primaryNavigation: "Primary navigation",
   },
   onboarding: {

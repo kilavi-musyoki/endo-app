@@ -52,7 +52,7 @@ export const evaluateEmergencyAlerts = (params: EmergencyEvaluationParams): Emer
   const isTryingWithSeverePainOrBleeding =
     params.isTryingToConceive === true &&
     (params.flow !== 'none' || params.bleedingBetweenPeriods === true) &&
-    (params.painScore >= 7 || params.painLocations.includes('pelvis') || params.painLocations.includes('lower_abdomen'));
+    (params.painScore >= 7 || ((params.painLocations.includes('pelvis') || params.painLocations.includes('lower_abdomen')) && params.painScore >= 5));
 
   if (isPregnancyFlagged || isTryingWithSeverePainOrBleeding) {
     alerts.push({

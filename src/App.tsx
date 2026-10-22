@@ -57,7 +57,7 @@ export const AppContent: React.FC = () => {
       <Header onRefreshData={refreshData} onLockApp={() => setIsLocked(true)} onOpenSettings={() => setShowSettings(true)} />
 
       {/* Main Content Area */}
-      <main id="main-content" className="flex-1 min-w-0 w-full px-4 py-5 pb-32 md:col-start-2 md:row-start-2 md:px-8 md:py-8 md:pb-10">
+      <main id="main-content" className="flex-1 min-w-0 w-full px-3 py-4 pb-28 sm:px-6 sm:py-6 md:col-start-2 md:row-start-2 md:px-8 md:py-8 md:pb-10">
         {currentTab === 'log' && (
           <DailyLogModal
             entries={entries}

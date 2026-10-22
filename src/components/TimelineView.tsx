@@ -335,11 +335,11 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
 
       {/* 3. Clean Filter Tabs */}
       {!activeDate && (
-        <div className="flex items-center space-x-1.5 px-0.5">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar px-0.5">
           <button
             onClick={() => setFilter('all')}
             aria-pressed={filter === 'all'}
-            className={`min-h-11 text-xs font-semibold px-3.5 py-2 rounded-xl transition ${
+            className={`min-h-11 text-xs font-semibold px-3.5 py-2 rounded-xl whitespace-nowrap shrink-0 transition ${
               filter === 'all'
                 ? 'bg-slate-900 text-white'
                 : 'bg-white text-slate-600 border border-slate-200/70 hover:bg-slate-50'
@@ -350,7 +350,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
           <button
             onClick={() => setFilter('period')}
             aria-pressed={filter === 'period'}
-            className={`min-h-11 text-xs font-semibold px-3.5 py-2 rounded-xl transition ${
+            className={`min-h-11 text-xs font-semibold px-3.5 py-2 rounded-xl whitespace-nowrap shrink-0 transition ${
               filter === 'period'
                 ? 'bg-brand-700 text-white'
                 : 'bg-white text-slate-600 border border-slate-200/70 hover:bg-slate-50'
@@ -361,7 +361,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
           <button
             onClick={() => setFilter('high_pain')}
             aria-pressed={filter === 'high_pain'}
-            className={`min-h-11 text-xs font-semibold px-3.5 py-2 rounded-xl transition ${
+            className={`min-h-11 text-xs font-semibold px-3.5 py-2 rounded-xl whitespace-nowrap shrink-0 transition ${
               filter === 'high_pain'
                 ? 'bg-rose-600 text-white'
                 : 'bg-white text-slate-600 border border-slate-200/70 hover:bg-slate-50'

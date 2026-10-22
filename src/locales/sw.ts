@@ -18,9 +18,13 @@ export const sw = {
   },
   nav: {
     log: "Rekodi Leo",
+    shortLog: "Rekodi",
     timeline: "Historia na Mienendo",
+    shortTimeline: "Historia",
     report: "Ripoti ya Daktari",
+    shortReport: "Ripoti",
     education: "Elimu na Huduma",
+    shortEducation: "Elimu",
     primaryNavigation: "Urambazaji mkuu",
   },
   onboarding: {

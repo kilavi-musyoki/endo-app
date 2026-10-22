@@ -80,11 +80,9 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
   const [bloodInUrine, setBloodInUrine] = useState<boolean | null>(null);
   const [bleedingBetweenPeriods, setBleedingBetweenPeriods] = useState<boolean | null>(null);
   const [moodSymptoms, setMoodSymptoms] = useState<string[]>([]);
-  const [painLocations, setPainLocations] = useState<PainLocation[]>(['pelvis']);
-  const [painDetails, setPainDetails] = useState<PainDetail[]>([
-    { location: 'pelvis', magnitude: 0, types: ['cramping'] }
-  ]);
-  const [activeDetailLocation, setActiveDetailLocation] = useState<PainLocation | null>('pelvis');
+  const [painLocations, setPainLocations] = useState<PainLocation[]>([]);
+  const [painDetails, setPainDetails] = useState<PainDetail[]>([]);
+  const [activeDetailLocation, setActiveDetailLocation] = useState<PainLocation | null>(null);
 
   const [dailyImpact, setDailyImpact] = useState<DailyImpact>('none');
   const [symptoms, setSymptoms] = useState<string[]>([]);
@@ -195,9 +193,9 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
       setBloodInUrine(null);
       setBleedingBetweenPeriods(null);
       setMoodSymptoms([]);
-      setPainLocations(['pelvis']);
-      setPainDetails([{ location: 'pelvis', magnitude: 0, types: ['cramping'] }]);
-      setActiveDetailLocation('pelvis');
+      setPainLocations([]);
+      setPainDetails([]);
+      setActiveDetailLocation(null);
       setDailyImpact('none');
       setSymptoms([]);
       setPainkillerTaken(false);
@@ -209,6 +207,11 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
 
   const handleOverallScoreChange = (newScore: number) => {
     setPainScore(newScore);
+    if (newScore > 0 && painLocations.length === 0) {
+      setPainLocations(['pelvis']);
+      setPainDetails([{ location: 'pelvis', magnitude: newScore, types: ['cramping'] }]);
+      setActiveDetailLocation('pelvis');
+    }
   };
 
   const toggleLocation = (loc: PainLocation) => {
@@ -386,14 +389,14 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
   return (
     <div className="mx-auto max-w-3xl py-2">
       <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-4 sm:p-6">
-        {/* Header Title */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        {/* Header Title & Date Picker */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
           <div>
-            <h2 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center space-x-1.5">
+            <h2 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center space-x-1.5">
               <span>{t.log.title}</span>
               <Sparkles className="w-4 h-4 text-brand-600" />
             </h2>
-            <p className="text-sm text-slate-600">{t.log.logIntro}</p>
+            <p className="text-xs sm:text-sm text-slate-600 mt-0.5 leading-snug">{t.log.logIntro}</p>
             {isEditing && (
               <p className="text-[11px] text-amber-700 font-bold mt-1 flex items-center space-x-1">
                 <span>✏️</span>
@@ -402,8 +405,8 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
             )}
           </div>
           
-          <div className="flex items-center space-x-1 bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1 text-xs font-semibold text-slate-700">
-            <Calendar className="w-3.5 h-3.5 text-brand-600" />
+          <div className="self-start sm:self-auto flex items-center space-x-1.5 bg-stone-100/90 hover:bg-stone-200/80 border border-stone-200/90 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs transition">
+            <Calendar className="w-3.5 h-3.5 text-brand-700 shrink-0" />
             <input
               type="date"
               value={date}
@@ -424,23 +427,23 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
 
         {/* Persistent In-Form Emergency Warning Banner */}
         {activeAlerts.length > 0 && !showEmergencyModal && (
-          <div className="mb-4 rounded-2xl border-2 border-rose-500 bg-rose-50 p-4 text-rose-950 shadow-sm space-y-2.5 animate-fade-in">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <div className="flex items-center gap-2">
-                <AlertOctagon className="w-5 h-5 text-rose-700 shrink-0" />
-                <span className="text-xs font-black uppercase tracking-wider text-rose-800">
+          <div className="mb-4 rounded-2xl border border-rose-300 bg-rose-50/90 p-3.5 sm:p-4 text-rose-950 shadow-sm space-y-2 animate-fade-in">
+            <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+              <div className="flex items-center gap-2 min-w-0">
+                <AlertOctagon className="w-4 h-4 text-rose-700 shrink-0" />
+                <span className="text-[11px] font-black uppercase tracking-wider text-rose-800 truncate">
                   {t.emergency.bannerBadge}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setShowEmergencyModal(true)}
-                className="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-700 text-white hover:bg-rose-800 transition"
+                className="text-xs font-bold px-3 py-1 rounded-lg bg-rose-700 text-white hover:bg-rose-800 transition shrink-0 shadow-2xs"
               >
                 {t.emergency.bannerAction}
               </button>
             </div>
-            <p className="text-sm font-semibold leading-snug">
+            <p className="text-xs sm:text-sm font-semibold leading-snug">
               {t.emergency.bannerTitle}
             </p>
             <ul className="text-xs space-y-1 text-rose-900 list-disc list-inside">

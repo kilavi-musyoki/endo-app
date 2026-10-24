@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StorageService } from '../services/storageService';
 import { CareContact } from '../types';
 import { useI18n } from '../locales/i18nContext';
-import { Pencil } from 'lucide-react';
+import { BadgeCheck, Phone, Pencil } from 'lucide-react';
 
 const emptyContact = {
   name: '', type: '', countyOrTown: '', services: '',
@@ -11,6 +11,13 @@ const emptyContact = {
 };
 
 type FormValues = typeof emptyContact;
+
+const providedContacts = [
+  { name: 'African Centre for Endometriosis', phone: '0799500555' },
+  { name: 'The Karen Hospital Nyeri', phone: '0727547212' },
+  { name: 'Marie Stopes Kenya, Nyeri', phone: '+254800720005' },
+  { name: 'Nyeri County Referral Hospital', phone: '0724249693' },
+];
 
 const safeWebUrl = (value?: string) => {
   if (!value) return undefined;
@@ -172,6 +179,32 @@ export const CareContactsView: React.FC = () => {
         <p className="mt-1 text-sm leading-relaxed text-slate-700">{t.careContacts.description}</p>
       </div>
 
+      <div className="space-y-3">
+        <div>
+          <h4 className="text-sm font-semibold text-slate-900">{t.careContacts.providedContactsTitle}</h4>
+          <p className="mt-1 text-sm leading-relaxed text-slate-700">{t.careContacts.providedContactsNote}</p>
+        </div>
+        <ul className="space-y-3">
+          {providedContacts.map(contact => (
+            <li key={contact.phone} className="overflow-hidden rounded-2xl border border-emerald-200 bg-white shadow-sm">
+              <div className="flex items-start justify-between gap-3 border-b border-emerald-100 bg-emerald-50/70 px-4 py-3">
+                <h5 className="text-sm font-semibold leading-snug text-slate-900">{contact.name}</h5>
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-200 bg-white px-2.5 py-1 text-xs font-semibold text-emerald-800">
+                  <BadgeCheck className="h-4 w-4" aria-hidden="true" />{t.careContacts.verified}
+                </span>
+              </div>
+              <div className="p-3">
+                <a href={`tel:${contact.phone.replace(/[^+\d]/g, '')}`} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand-800 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2">
+                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  <span>{contact.phone}</span>
+                  <span className="sr-only">{t.careContacts.phone}</span>
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* ── Add button / form ────────────────────────────────────────────── */}
       <button
         type="button"
@@ -199,6 +232,7 @@ export const CareContactsView: React.FC = () => {
         </form>
       )}
 
+      <h4 className="text-sm font-semibold text-slate-900">{t.careContacts.userContactsTitle}</h4>
       {/* ── Contact list ─────────────────────────────────────────────────── */}
       {contacts.length === 0
         ? <p className="rounded-xl bg-stone-50 p-4 text-sm text-slate-700">{t.careContacts.noContacts}</p>

@@ -79,6 +79,14 @@
 - **Decision:** Present a two-step first-run flow: prototype boundary and acknowledgement, then an optional display name or pseudonym. Do not require health-history details to enter the app. Keep other profile questions optional in Settings, preserve the prototype warning, and mount the dialog at the document level to keep it positioned relative to the viewport.
 - **Consequences:** A supplied display name is stored in this browser and may appear on reports; the first-run copy advises fictional data only. The flow is not formal consent or an account-creation process. Revisit the collected fields and copy after privacy review.
 
+## ADR-010: Show owner-confirmed care phone listings separately from personal contacts
+
+- **Status:** Accepted (prototype behavior)
+- **Date:** 2026-10-24
+- **Context:** The user requested four phone listings always visible on the Care & Education page, alongside a personal list users can add to, and confirmed the details were verified.
+- **Decision:** Show the supplied name/phone pairs as fixed tap-to-call listings above the user's browser-local contacts, with a professional verified badge. Attribute verification to the project owner and state that the app does not independently check for later changes.
+- **Consequences:** The fixed listings do not use the editable contact storage and remain visible when a user adds or removes personal contacts. The app does not maintain a verification date or guarantee ongoing accuracy.
+
 ## Decision process
 
 Replace proposal status with accepted/rejected, owner, date, and review triggers when stakeholders decide. Add one ADR per consequential change.

@@ -8,7 +8,7 @@ A mobile-first prototype for recording menstrual and related symptoms and prepar
 - Optional profile history fields; sensitive fields can be left blank.
 - Cycle dates and up-to-three-cycle descriptive averages when the user explicitly marks period starts and ends. The app does not compare these averages with clinical ranges.
 - Printable clinician summary, including user-entered history and daily observations.
-- A local list for contacts the user chooses to save. Listings are not verified by the app; location is entered manually and device location is not accessed.
+- Four fixed care contact phone listings confirmed by the project owner, plus a local list for contacts the user chooses to save. The app does not independently check for later changes; personal contact location is entered manually and device location is not accessed.
 - English and Kiswahili interface strings, a convenience PIN screen, synthetic demo data, and local data deletion.
 - First-use onboarding explains prototype limits and offers an optional display name or pseudonym; sensitive health-history fields are not required to start.
 
@@ -16,7 +16,7 @@ The app stores data in browser `localStorage`. The PIN does not encrypt it. This
 
 ## Clinical and directory review status
 
-The draft guide's thresholds, point scoring, result bands, override, and emergency alerts are not active. Clinical education and emergency contact details are hidden pending qualified clinical review and local verification. The contacts area is user-maintained and must not be presented as a verified directory. No clinician approval, clinical validation, privacy/security review, or Kenya regulatory compliance is claimed.
+The draft guide's thresholds, point scoring, result bands, and override are not active. Clinical education and emergency instructions are hidden pending qualified clinical review. The four fixed contact listings are marked as confirmed by the project owner; the app does not independently verify ongoing accuracy. User contacts remain user-maintained. No clinician approval, clinical validation, privacy/security review, or Kenya regulatory compliance is claimed.
 
 ## Development
 

@@ -78,7 +78,7 @@ Each entry card shows date, a flow badge when the flow is non-none, a recorded p
 
 ## 5. Daily Log screen
 
-The daily log is a vertically scrolling form inside a white card. The title row includes neutral introductory copy and a date input. When a saved date is loaded for editing, an “Editing entry for [date]” label is shown. Core flow and pain inputs appear first; optional groups can be expanded when useful. Form sections appear in this order:
+The daily log is a vertically scrolling form inside a white card. The title row includes neutral introductory copy and a date input. When a saved date is loaded for editing, an “Editing entry for [date]” label is shown. A two-option control selects **Quick log** or **Detailed log**. New dates open in Quick log; saved entries open in Detailed log. Both modes save the same date-based record. Quick log shows menstrual flow, overall pain, impact on the day, an optional note, and the save action. Detailed log shows the complete form described below. A quick log does not create a hidden default pain location.
 
 ### A. Flow and bleeding details
 
@@ -106,7 +106,7 @@ Four full-width choices appear in a two-column grid: no disruption, mild interfe
 
 ### G. Medication and response
 
-When **Pain Medication Taken?** is selected, the user can optionally type a medication name or choose a generic-name suggestion (paracetamol/acetaminophen, ibuprofen, naproxen, or aspirin), then record whether it helped. Suggestions are for recording only and are not treatment advice.
+When **Pain Medication Taken?** is selected in Detailed log, the user can type a medication name as optional free text, then record whether it helped. No medicine suggestions are shown.
 
 ### H. Associated symptoms and custom tags
 
@@ -114,7 +114,7 @@ Symptom selection and notes are collapsed optional sections. The category select
 
 ### H. Medication response and notes
 
-A checkbox asks whether pain medication was taken. When checked, the user can optionally enter or choose a medication name and record whether it helped with yes, somewhat, or no. The form ends with an optional notes textarea and a full-width gradient save button. After saving, a success panel replaces the form briefly and the app returns to the timeline.
+A checkbox asks whether pain medication was taken. When checked, the user can optionally enter a medication name and record whether it helped with yes, somewhat, or no. The form ends with an optional notes textarea and a full-width save button. After saving, a success panel replaces the form briefly and the app returns to the timeline.
 
 ## 6. Doctor Report screen
 
@@ -130,9 +130,9 @@ The print stylesheet removes the app header, navigation, buttons, and page paddi
 
 The first card has a heart/handshake icon, page title, and short subtitle. An amber warning card follows, with a shield-alert icon and a clear heading that clinical guidance is pending review. Its copy explains that symptom thresholds, emergency instructions, and facility details need qualified clinical and local review.
 
-The contacts card begins with a title and verification/location caveat. **Add a care contact** expands an inline form; on wider screens the inputs form two columns, while narrow screens use one column. Facility/clinician name, type, location, and services are required. Clinician name, specialty, phone, hours, booking link, map link, cost range, and insurance are optional. The form ends with **Save contact**. Saved rows show the contact name/type/location, services, any optional details, and links. Booking and map links open separately in the browser. **Remove** opens an inline confirm/cancel choice before removing a contact from this browser.
+The contacts card begins with a verification/location caveat and a fixed section containing four project-owner-confirmed listings: African Centre for Endometriosis (0799500555), The Karen Hospital Nyeri (0727547212), Marie Stopes Kenya, Nyeri (+254800720005), and Nyeri County Referral Hospital (0724249693). Each card uses a verified badge and a prominent tap-to-call button. The note attributes verification to the project owner and explains that the app does not independently check for later changes. The fixed listings remain visible and separate from the user's editable contacts. **Add a care contact** expands an inline form; on wider screens the inputs form two columns, while narrow screens use one column. Facility/clinician name, type, location, and services are required. Clinician name, specialty, phone, hours, booking link, map link, cost range, and insurance are optional. The form ends with **Save contact**. Saved rows show the contact name/type/location, services, any optional details, and links. Booking and map links open separately in the browser. **Remove** opens an inline confirm/cancel choice before removing a user contact from this browser.
 
-This is a personal list, not a searchable or verified directory. The UI does not use device location or confirm whether a listed provider, service, fee, insurance, or contact detail is current.
+The app does not independently verify listings or track whether provider, service, fee, insurance, or contact details change. It does not search a directory or use device location.
 
 ## 8. Settings screen
 

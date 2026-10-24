@@ -34,7 +34,9 @@ The summary includes the number of user-marked period starts, average pain on lo
 
 ### Daily Log
 
-One entry represents one calendar date. These fields are available:
+One entry represents one calendar date. New entries open in **Quick log**, which records menstrual flow, overall pain, impact on the day, and an optional note. **Detailed log** exposes the full set of optional fields below. Existing entries open in Detailed log when edited. Both modes save to the same date-based entry. Quick logs do not add a default pain location behind the scenes.
+
+These fields are available in Detailed log:
 
 | Area | What the user can record |
 |---|---|
@@ -47,7 +49,7 @@ One entry represents one calendar date. These fields are available:
 | Associated symptoms | Optional selections for pain during bowel movements, painful urination, pain with intimacy, heavy bleeding with large clots, bloating, nausea/vomiting, fatigue, mid-cycle pain, constipation/diarrhea, leg weakness/numbness/sciatica, lower-back stiffness/ache, and brain fog/concentration trouble. Users can add and remove their own named symptom tags. |
 | Medication and notes | Whether pain medication was taken and, if so, whether it helped, helped somewhat, or did not help; optional free-text notes. The app does not identify a medicine or advise on its use. |
 
-The form describes sensitive fields as optional and says they are collected to help users describe their own experience, not to assess a condition. Free-text notes may contain identifying or especially sensitive details, so avoid entering real details in this prototype.
+Detailed-log sensitive fields are optional and described as helping users record their own experience, not assess a condition. Medication names are free text with no suggested medicines. Free-text notes may contain identifying or especially sensitive details, so avoid entering real details in this prototype.
 
 ### Doctor Report
 
@@ -67,11 +69,11 @@ This is a summary of entries, not a diagnosis, recommendation, or clinician-revi
 
 ### Care & Education
 
-The page displays a notice that clinical guidance is pending qualified review. Thresholds, emergency instructions, and facility contact details are not supplied as guidance. The app does not assess or triage symptoms.
+The page displays a notice that clinical guidance is pending qualified review. Thresholds and emergency instructions are not supplied as guidance. The app does not assess or triage symptoms.
 
-The “My care contacts” section lets a user keep their own contacts in this browser. Required fields are facility/clinician name, type, county or town, and services offered. Optional fields are clinician name, specialty, phone, hours, booking/information link, map link, cost range, and insurance accepted. Contacts can be removed. Web links are accepted only with `http` or `https` schemes.
+The contacts card first displays four fixed phone listings confirmed by the project owner: African Centre for Endometriosis (0799500555), The Karen Hospital Nyeri (0727547212), Marie Stopes Kenya, Nyeri (+254800720005), and Nyeri County Referral Hospital (0724249693). Each has a verified badge and a tap-to-call button. The app does not independently check for later changes. These entries are always shown and are separate from a user's saved contacts.
 
-Contacts are user-entered and unverified. The feature does not search a directory, validate a provider or service, determine distance, access device location, or confirm costs, insurance, opening hours, or contact details. The user should verify details independently before relying on them.
+The “My contacts” section lets a user keep their own contacts in this browser. Required fields are facility/clinician name, type, county or town, and services offered. Optional fields are clinician name, specialty, phone, hours, booking/information link, map link, cost range, and insurance accepted. Contacts can be removed. Web links are accepted only with `http` or `https` schemes. The app does not independently verify contact details, search a directory, determine distance, or access device location.
 
 ## Header and Settings
 
@@ -108,7 +110,7 @@ To load one, open **Settings** and go to **Synthetic test data**, choose a scena
 
 All current app data is stored in this browser’s `localStorage` on this device. This includes symptom entries, profile details, PIN, custom symptom labels, care contacts, demo-mode state, and onboarding acknowledgement. There is no implemented account or server data store. The prototype does not provide encryption at rest, backups, access auditing, data portability controls, or protection against someone with access to the browser/device. Clearing browser storage also removes locally stored app data. Printed/exported reports and screenshots are separate copies.
 
-Daily entries keep the overall pain score separate from each selected location’s score. Medication name is optional and saved only when a user records that pain medication was taken; generic-name suggestions are for recording only, not treatment advice.
+Daily entries keep the overall pain score separate from each selected location’s score. In Detailed log, a medication name is optional free text and saved only when a user records that pain medication was taken. The form does not suggest medicines.
 
 Do not use production health information in development, screenshots, test data, logs, or prompts. The demo dataset is synthetic. No analytics, advertising, third-party AI, or health-data sharing integration is implemented in this prototype.
 

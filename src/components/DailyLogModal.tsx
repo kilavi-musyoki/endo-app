@@ -98,6 +98,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [saveError, setSaveError] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [logMode, setLogMode] = useState<'quick' | 'detailed'>('quick');
 
   const userProfile = StorageService.getUserProfile();
 
@@ -147,6 +148,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
     const existing = entries.find(e => e.date === date);
     if (existing) {
       setIsEditing(true);
+      setLogMode('detailed');
       setFlow(existing.flow);
       setPeriodStart(existing.periodStart ?? false);
       setPeriodEnd(existing.periodEnd ?? false);
@@ -180,6 +182,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
       setNotes(existing.notes || '');
     } else {
       setIsEditing(false);
+      setLogMode('quick');
       setFlow('none');
       setPeriodStart(false);
       setPeriodEnd(false);
@@ -207,7 +210,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
 
   const handleOverallScoreChange = (newScore: number) => {
     setPainScore(newScore);
-    if (newScore > 0 && painLocations.length === 0) {
+    if (newScore > 0 && painLocations.length === 0 && logMode === 'detailed') {
       setPainLocations(['pelvis']);
       setPainDetails([{ location: 'pelvis', magnitude: newScore, types: ['cramping'] }]);
       setActiveDetailLocation('pelvis');
@@ -467,6 +470,18 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
           </div>
         ) : (
           <form onSubmit={handleSave} className="space-y-5">
+            <fieldset className="rounded-2xl border border-stone-200 bg-stone-50 p-3">
+              <legend className="px-1 text-xs font-bold text-slate-800">{t.log.logModeLabel}</legend>
+              <div className="grid grid-cols-2 gap-2">
+                {(['quick', 'detailed'] as const).map(mode => (
+                  <button key={mode} type="button" aria-pressed={logMode === mode} onClick={() => setLogMode(mode)}
+                    className={`min-h-11 rounded-xl border px-3 py-2 text-sm font-semibold ${logMode === mode ? 'border-brand-700 bg-brand-700 text-white' : 'border-stone-300 bg-white text-slate-800'}`}>
+                    {mode === 'quick' ? t.log.quickLog : t.log.detailedLog}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-slate-600">{logMode === 'quick' ? t.log.quickLogDescription : t.log.detailedLogDescription}</p>
+            </fieldset>
             {/* 1. Menstrual Flow Level */}
             <div>
               <label className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 mb-2">
@@ -498,6 +513,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
               </div>
             </div>
 
+            {logMode === 'detailed' && <>
             {/* Optional bleeding details; these are recorded as entered, without interpreting thresholds. */}
             <div className="space-y-2 rounded-2xl border border-stone-200 bg-white p-4">
               <h3 className="text-sm font-semibold text-slate-900">{t.log.periodDatesLabel}</h3>
@@ -567,6 +583,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
               <p className="text-sm leading-relaxed text-slate-700">{t.log.sensitiveFieldNote}</p>
               </div>
             </details>
+            </>}
 
             {/* 2. Interactive Overall Pain Severity Gauge */}
             <div className={`p-4 rounded-2xl border transition-colors ${painInfo.bg} ${painInfo.border}`}>
@@ -609,6 +626,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
               </div>
             </div>
 
+            {logMode === 'detailed' && <>
             <details className="rounded-2xl border border-stone-200 bg-white p-4">
               <summary className="min-h-11 cursor-pointer py-1 text-sm font-semibold text-slate-900">{t.log.otherDetailsLabel} · {t.log.optionalCollapsed}</summary>
               <fieldset className="space-y-3 pt-3">
@@ -772,6 +790,8 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
               )}
             </div>
 
+            </>}
+
             {/* 4. Daily Life Disruption */}
             <div>
               <label className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 mb-2">
@@ -801,6 +821,7 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
               </div>
             </div>
 
+            {logMode === 'detailed' && <>
             {/* 5. Categorized & Custom Symptoms Section */}
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -978,19 +999,12 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
                     {t.log.medicationNameLabel}
                     <input
                       type="text"
-                      list="pain-medication-suggestions"
                       autoComplete="off"
                       value={painkillerName}
                       onChange={e => setPainkillerName(e.target.value)}
                       placeholder={t.log.medicationNamePlaceholder}
                       className="ui-field mt-1"
                     />
-                    <datalist id="pain-medication-suggestions">
-                      <option value="Paracetamol (acetaminophen)" />
-                      <option value="Ibuprofen" />
-                      <option value="Naproxen" />
-                    </datalist>
-                    <span className="mt-1 block font-normal text-slate-500">{t.log.medicationNameNote}</span>
                   </label>
                   <span className="block text-[11px] font-semibold text-slate-700 mb-2">
                     {t.log.medicationEffective}
@@ -1036,6 +1050,8 @@ export const DailyLogModal: React.FC<DailyLogProps> = ({ onSaved, entries, onNav
                 </div>
               )}
             </div>
+
+            </>}
 
             {/* 7. Personal Notes */}
             <details className="rounded-2xl border border-stone-200 bg-white p-4">
